@@ -216,6 +216,7 @@ namespace SharedMemory
 		 * that there's enough space available
 		 *
 		 * @param[in] iter An iterator to the next vacancy
+		 * @param[in] size Number of bytes to allocate
 		 *
 		 * @return A unique ID by which to reference the newly
 		 *         allocated memory
@@ -423,7 +424,7 @@ namespace SharedMemory
 		{
 			AbortIfNot(_is_init, false);
 
-			AbortIf(::munmap ( _addr, _size )   == -1,
+			AbortIf(::munmap    (_addr, _size)  == -1,
 				 false);
 			AbortIf(::shm_unlink(_name.c_str()) == -1,
 				false);
@@ -436,26 +437,26 @@ namespace SharedMemory
 		}
 
 		/**
-		 * Read data from the block of memory associated with ID /a
-		 * id into /a buf
+		 * Read data from the shared memory object into the given
+		 * buffer
 		 *
 		 * @param[in] buf  The buffer to read into
-		 * @param[in] size The total number of bytes to read
+		 * @param[in] size Total number of bytes to read
 		 *
 		 * @return True on success
 		 */
 		bool read( void* buf, size_t size ) const
 		{
 			AbortIfNot(_is_init, false);
-			AbortIfNot(_manager.read(_mem_id, buf, size),
+			AbortIfNot(_manager.read( _mem_id, buf, size ),
 				false);
 
 			return true;
 		}
 
 		/**
-		 * Write data from /a buf to the block of memory associated
-		 * with ID /a id
+		 *  Write data from the given buffer into the shared memory
+		 *  object
 		 *
 		 * @param[in] buf  The buffer to write from
 		 * @param[in] size The total number of bytes to write
