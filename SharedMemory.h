@@ -390,6 +390,10 @@ namespace SharedMemory
 				break;
 			case read_write:
 				mode  |= (S_IRWXG | S_IRWXO);
+				break;
+			default:
+				AbortIf(true, false,
+						"PROT_NONE is not supported.\n");
 			}
 
 			const int fd = ::shm_open(_name.c_str(), oflag, mode);
@@ -547,12 +551,15 @@ namespace SharedMemory
 	{
 		struct Server
 		{
-			Server( access_t _access, void* _addr, int _fd,
-					int _id, const std::string& _name,
-					size_t _size)
-				: access( _access ), addr( _addr), fd(_fd),
-				  id(_id), name(_name), mem_id(-1),
-				  size(_size)
+			Server(access_t _access, void* _addr, int _fd, int _id,
+				   const std::string& _name, size_t _size)
+				: access( _access ),
+				  addr( _addr),
+				  fd(_fd),
+				  id(_id),
+				  mem_id( -1 ),
+				  name(_name),
+				  	size(_size)
 			{
 			}
 
@@ -562,12 +569,12 @@ namespace SharedMemory
 				return true;
 			}
 
-			access_t  access;
+			access_t access;
 			void* addr;
 			int fd;
 			int id;
 			MemoryManager
-					 manager;
+					manager;
 			int mem_id;
 			std::string name;
 			size_t size;
